@@ -6,7 +6,7 @@ Core engine for building motion detection web apps.
 
 `diff-cam-engine.js` provides a `DiffCamEngine` object that accesses the webcam, captures images from it, and evaluates motion.
 
-You'll want to use the `adapter.js` shim, which is available here: https://github.com/webrtc/adapter. Add it before `diff-cam-engine.js`.
+If you have browser compatibility issues, you can try the `adapter.js` shim, which is available here: https://github.com/webrtc/adapter. Add it before `diff-cam-engine.js`.
 
 With that in place, call `DiffCamEngine.init()` to initialize. This will set things up and ask the user for permission to access the webcam.
 
@@ -48,6 +48,8 @@ The following variables can be passed into `init()`:
 | diffHeight | 48 | Height of (usually downsized) images used for diffing and showing motion |
 | pixelDiffThreshold | 32 | Minimum difference in a pixel to be considered changed |
 | scoreThreshold | 16 | Minimum number of changed pixels for an image to be considered as having motion |
+| imageMimeType | "image/jpeg" | mime type string e.g. "image/jpeg", "image/png" |
+| jpegQuality | 0.7 | "image/jpeg" quality value between 0 and 1 |
 | includeMotionBox | false | Flag to calculate and display (on motionCanvas) the bounding box of motion |
 | includeMotionPixels | false | Flag to include data indicating all the changed pixels |
 

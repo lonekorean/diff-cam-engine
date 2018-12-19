@@ -1,12 +1,14 @@
 var DiffCamEngine = (function() {
-	var stream;					// stream obtained from webcam
-	var video;					// shows stream
-	var captureCanvas;			// internal canvas for capturing full images from video
-	var captureContext;			// context for capture canvas
-	var diffCanvas;				// internal canvas for diffing downscaled captures
-	var diffContext;			// context for diff canvas
-	var motionCanvas;			// receives processed diff images
-	var motionContext;			// context for motion canvas
+	var stream;			// stream obtained from webcam
+	var video;			// shows stream
+	var captureCanvas;		// internal canvas for capturing full images from video
+	var captureContext;		// context for capture canvas
+	var diffCanvas;			// internal canvas for diffing downscaled captures
+	var diffContext;		// context for diff canvas
+	var motionCanvas;		// receives processed diff images
+	var motionContext;		// context for motion canvas
+	var imageMimeType;		// string e.g. "image/jpeg", "image/png"
+	var jpegQuality;		// imageMimeType:"image/jpeg" quality value between 0 and 1
 
 	var initSuccessCallback;	// called when init succeeds
 	var initErrorCallback;		// called when init fails
@@ -15,13 +17,13 @@ var DiffCamEngine = (function() {
 
 	var captureInterval;		// interval for continuous captures
 	var captureIntervalTime;	// time between captures, in ms
-	var captureWidth;			// full captured image width
-	var captureHeight;			// full captured image height
-	var diffWidth;				// downscaled width for diff/motion
-	var diffHeight;				// downscaled height for diff/motion
-	var isReadyToDiff;			// has a previous capture been made to diff against?
+	var captureWidth;		// full captured image width
+	var captureHeight;		// full captured image height
+	var diffWidth;			// downscaled width for diff/motion
+	var diffHeight;			// downscaled height for diff/motion
+	var isReadyToDiff;		// has a previous capture been made to diff against?
 	var pixelDiffThreshold;		// min for a pixel to be considered significant
-	var scoreThreshold;			// min for an image to be considered significant
+	var scoreThreshold;		// min for an image to be considered significant
 	var includeMotionBox;		// flag to calculate and draw motion bounding box
 	var includeMotionPixels;	// flag to create object denoting pixels with motion
 
@@ -43,6 +45,8 @@ var DiffCamEngine = (function() {
 		scoreThreshold = options.scoreThreshold || 16;
 		includeMotionBox = options.includeMotionBox || false;
 		includeMotionPixels = options.includeMotionPixels || false;
+		imageMimeType = options.imageMimeType || "image/jpeg";
+		jpegQuality = options.jpegQuality || 0.7;
 
 		// callbacks
 		initSuccessCallback = options.initSuccessCallback || function() {};
@@ -153,7 +157,7 @@ var DiffCamEngine = (function() {
 					return getCaptureUrl(this.imageData);
 				},
 				checkMotionPixel: function(x, y) {
-					return checkMotionPixel(this.motionPixels, x, y)
+					return checkMotionPixel(this.motionPixels, x, y);
 				}
 			});
 		}
@@ -232,7 +236,13 @@ var DiffCamEngine = (function() {
 	function getCaptureUrl(captureImageData) {
 		// may as well borrow captureCanvas
 		captureContext.putImageData(captureImageData, 0, 0);
-		return captureCanvas.toDataURL();
+		//image mime type
+		//ref: https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toDataURL
+		if (imageMimeType == "image/jpeg") {
+			return captureCanvas.toDataURL("image/jpeg", jpegQuality);
+		} else {
+			return captureCanvas.toDataURL(imageMimeType);
+		}
 	}
 
 	function checkMotionPixel(motionPixels, x, y) {

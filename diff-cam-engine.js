@@ -180,7 +180,7 @@ var DiffCamEngine = (function() {
 
 			if (pixelDiff >= pixelDiffThreshold) {
 				score++;
-				coords = calculateCoordinates(i / 4);
+				var coords = calculateCoordinates(i / 4);
 
 				if (includeMotionBox) {
 					motionBox = calculateMotionBox(motionBox, coords.x, coords.y);

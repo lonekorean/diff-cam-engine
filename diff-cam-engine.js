@@ -127,7 +127,7 @@ var DiffCamEngine = (function() {
 
 		// diff current capture over previous capture, leftover from last time
 		diffContext.globalCompositeOperation = 'difference';
-		diffContext.drawImage(video, 0, 0, diffWidth, diffHeight);
+		diffContext.drawImage(captureCanvas, 0, 0, diffWidth, diffHeight);
 		var diffImageData = diffContext.getImageData(0, 0, diffWidth, diffHeight);
 
 		if (isReadyToDiff) {
@@ -160,7 +160,7 @@ var DiffCamEngine = (function() {
 
 		// draw current capture normally over diff, ready for next time
 		diffContext.globalCompositeOperation = 'source-over';
-		diffContext.drawImage(video, 0, 0, diffWidth, diffHeight);
+		diffContext.drawImage(captureCanvas, 0, 0, diffWidth, diffHeight);
 		isReadyToDiff = true;
 	}
 
